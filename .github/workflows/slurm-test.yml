@@ -1,0 +1,36 @@
+name: SLURM CI
+
+on:
+  pull_request:
+    branches:
+      - '**'
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up SLURM environment
+        uses: koesterlab/setup-slurm-action@v1
+        with:
+          version: '21.08'  # Specify the SLURM version you need
+            #install-path: '/opt/slurm'  # Optional, default path will be used if not provided
+
+      - name: Run SLURM tests
+        run: |
+          # Example: Submitting a SLURM job script for testing
+          sbatch scripts/helloworld.sbatch
+          #cd hello-sleep/
+          #make
+          #sbatch hellosleep.sbatch
+
+      - name: Post-test cleanup
+        run: |
+          # Clean up any test artifacts or logs, if necessary
+          rm -rf /opt/slurm/logs
+
